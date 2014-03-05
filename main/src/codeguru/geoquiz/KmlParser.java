@@ -26,7 +26,8 @@ public class KmlParser {
         }
     }
 
-    private List<Country> parseCountries(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private List<Country> parseCountries(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
         List<Country> countries = new ArrayList<Country>();
 
         parser.require(XmlPullParser.START_TAG, null, "Document");
@@ -47,7 +48,8 @@ public class KmlParser {
         return countries;
     }
 
-    private Country parseCountry(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private Country parseCountry(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "Placemark");
 
         Country country = new Country();
@@ -68,6 +70,8 @@ public class KmlParser {
             }
         }
 
+        parser.require(XmlPullParser.END_TAG, null, "Placemark");
+
         return country;
     }
 
@@ -75,8 +79,12 @@ public class KmlParser {
 
     }
 
-    private String parseName(XmlPullParser parser) {
-        return null;
+    private String parseName(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "name");
+        String name = parseText(parser);
+        parser.require(XmlPullParser.END_TAG, null, "name");
+        return name;
     }
 
     private LookAt parseLookAt(XmlPullParser parser) {
@@ -84,6 +92,10 @@ public class KmlParser {
     }
 
     private List<LatLng> parseBorder(XmlPullParser parser) {
+        return null;
+    }
+
+    private String parseText(XmlPullParser parser) {
         return null;
     }
 
