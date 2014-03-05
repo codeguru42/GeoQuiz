@@ -87,8 +87,38 @@ public class KmlParser {
         return name;
     }
 
-    private LookAt parseLookAt(XmlPullParser parser) {
-        return null;
+    private LookAt parseLookAt(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "LookAt");
+
+        LookAt lookAt = new LookAt();
+        double longitude = Double.NaN;
+        double latitude = Double.NaN;
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("longitude")) {
+                longitude = parseLongitude(parser);
+            } else if (name.equals("latitude")) {
+                latitude = parseLatitude(parser);
+            } else if (name.equals("heading")) {
+                lookAt.bearing = parseBearing(parser);
+            } else if (name.equals("tilt")) {
+                lookAt.tilt = parstTilt(parser);
+            } else if (name.equals("range")) {
+                lookAt.zoom = parseZoom(parser);
+            } else {
+                skip(parser);
+            }
+        }
+
+        parser.require(XmlPullParser.END_TAG, null, "Placemark");
+
+        lookAt.target = new LatLng(latitude, longitude);
+        return lookAt;
     }
 
     private List<LatLng> parseBorder(XmlPullParser parser) {
@@ -97,6 +127,31 @@ public class KmlParser {
 
     private String parseText(XmlPullParser parser) {
         return null;
+    }
+
+    private double parseLatitude(XmlPullParser parser) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private double parseLongitude(XmlPullParser parser) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private float parseBearing(XmlPullParser parser) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private float parstTilt(XmlPullParser parser) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private float parseZoom(XmlPullParser parser) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }
