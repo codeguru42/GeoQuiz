@@ -125,9 +125,14 @@ public class KmlParser {
         return null;
     }
 
-    private String parseText(XmlPullParser parser) {
-        return null;
-    }
+    private String parseText(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        String result = null;
+        if (parser.next() == XmlPullParser.TEXT) {
+            result = parser.getText();
+            parser.nextTag();
+        }
+        return result;    }
 
     private double parseLatitude(XmlPullParser parser) {
         // TODO Auto-generated method stub
