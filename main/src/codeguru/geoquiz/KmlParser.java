@@ -2,6 +2,8 @@ package codeguru.geoquiz;
 
 import android.util.Xml;
 import codeguru.geoquiz.data.Country;
+import codeguru.geoquiz.data.LookAt;
+import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,12 +47,44 @@ public class KmlParser {
         return countries;
     }
 
-    private Country parseCountry(XmlPullParser parser) {
-        return null;
+    private Country parseCountry(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "Placemark");
+
+        Country country = new Country();
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("name")) {
+                country.name = parseName(parser);
+            } else if (name.equals("LookAt")) {
+                country.lookAt = parseLookAt(parser);
+            } else if (name.equals("MultiGeometry")) {
+                country.border = parseBorder(parser);
+            } else {
+                skip(parser);
+            }
+        }
+
+        return country;
     }
 
     private void skip(XmlPullParser parser) {
 
+    }
+
+    private String parseName(XmlPullParser parser) {
+        return null;
+    }
+
+    private LookAt parseLookAt(XmlPullParser parser) {
+        return null;
+    }
+
+    private List<LatLng> parseBorder(XmlPullParser parser) {
+        return null;
     }
 
 }
