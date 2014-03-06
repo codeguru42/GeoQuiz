@@ -1,5 +1,6 @@
 package codeguru.geoquiz;
 
+import android.util.Log;
 import android.util.Xml;
 import codeguru.geoquiz.data.Country;
 import codeguru.geoquiz.data.LookAt;
@@ -12,6 +13,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 public class KmlParser {
+
+    private static final String TAG = KmlParser.class.getName();
 
     public List<Country> parse(InputStream in) throws IOException,
             XmlPullParserException {
@@ -30,6 +33,11 @@ public class KmlParser {
             throws XmlPullParserException, IOException {
         List<Country> countries = new ArrayList<Country>();
 
+        Log.d(TAG, parser.getName());
+        parser.require(XmlPullParser.START_TAG, null, "kml");
+        parser.next();
+
+        Log.d(TAG, parser.getName());
         parser.require(XmlPullParser.START_TAG, null, "Document");
 
         while (parser.next() != XmlPullParser.END_TAG) {
