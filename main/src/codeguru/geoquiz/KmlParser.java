@@ -166,9 +166,12 @@ public class KmlParser {
         return Float.parseFloat(tilt);
     }
 
-    private float parseZoom(XmlPullParser parser) {
-        // TODO Auto-generated method stub
-        return 0;
+    private float parseZoom(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "range");
+        String zoom = parseText(parser);
+        parser.require(XmlPullParser.END_TAG, null, "range");
+        return Float.parseFloat(zoom);
     }
 
 }
