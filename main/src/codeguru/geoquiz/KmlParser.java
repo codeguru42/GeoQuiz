@@ -121,8 +121,23 @@ public class KmlParser {
         return lookAt;
     }
 
-    private List<LatLng> parseBorder(XmlPullParser parser) {
-        return null;
+    private List<LatLng> parseBorder(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "name");
+        String borderStr = parseText(parser);
+        parser.require(XmlPullParser.END_TAG, null, "name");
+
+        List<LatLng> border = new ArrayList<LatLng>();
+        String[] coordsStrs = borderStr.split(" ");
+        for (String coordsStr : coordsStrs) {
+            String[] coords = coordsStr.split(",");
+            double longitude = Double.parseDouble(coords[0]);
+            double latitude = Double.parseDouble(coords[1]);
+            LatLng point = new LatLng(latitude, longitude);
+            border.add(point);
+        }
+
+        return border;
     }
 
     private String parseText(XmlPullParser parser)
