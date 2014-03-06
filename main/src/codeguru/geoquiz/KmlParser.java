@@ -142,9 +142,12 @@ public class KmlParser {
         return Double.parseDouble(longitude);
     }
 
-    private double parseLatitude(XmlPullParser parser) {
-        // TODO Auto-generated method stub
-        return 0;
+    private double parseLatitude(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "latitude");
+        String latitude = parseText(parser);
+        parser.require(XmlPullParser.END_TAG, null, "latitude");
+        return Double.parseDouble(latitude);
     }
 
     private float parseBearing(XmlPullParser parser) {
