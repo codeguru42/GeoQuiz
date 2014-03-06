@@ -134,12 +134,15 @@ public class KmlParser {
         }
         return result;    }
 
-    private double parseLatitude(XmlPullParser parser) {
-        // TODO Auto-generated method stub
-        return 0;
+    private double parseLongitude(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "longitude");
+        String longitude = parseText(parser);
+        parser.require(XmlPullParser.END_TAG, null, "longitude");
+        return Double.parseDouble(longitude);
     }
 
-    private double parseLongitude(XmlPullParser parser) {
+    private double parseLatitude(XmlPullParser parser) {
         // TODO Auto-generated method stub
         return 0;
     }
