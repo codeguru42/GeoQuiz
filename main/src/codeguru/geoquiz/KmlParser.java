@@ -83,8 +83,23 @@ public class KmlParser {
         return country;
     }
 
-    private void skip(XmlPullParser parser) {
+    private void skip(XmlPullParser parser) throws XmlPullParserException,
+            IOException {
+        if (parser.getEventType() != XmlPullParser.START_TAG) {
+            throw new IllegalStateException();
+        }
+        int depth = 1;
+        while (depth != 0) {
+            switch (parser.next()) {
+                case XmlPullParser.END_TAG:
+                    depth--;
+                    break;
 
+                case XmlPullParser.START_TAG:
+                    depth++;
+                    break;
+            }
+        }
     }
 
     private String parseName(XmlPullParser parser)
@@ -155,7 +170,8 @@ public class KmlParser {
             result = parser.getText();
             parser.nextTag();
         }
-        return result;    }
+        return result;
+    }
 
     private double parseLongitude(XmlPullParser parser)
             throws XmlPullParserException, IOException {
