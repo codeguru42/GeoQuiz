@@ -113,6 +113,7 @@ public class MainActivity extends ActionBarActivity {
         paintCountry(country);
         moveCamera();
         ++countryIndex;
+        countryIndex %= countries.size();
 
         getSupportActionBar().setTitle("GeoQuiz - " + country.name);
     }
