@@ -72,7 +72,8 @@ public class KmlParser {
             } else if (name.equals("LookAt")) {
                 country.lookAt = parseLookAt(parser);
             } else if (name.equals("MultiGeometry")) {
-                country.border = parseBorder(parser);
+                skip(parser);
+                // country.border = parseBorder(parser);
             } else {
                 skip(parser);
             }
