@@ -5,9 +5,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import codeguru.geoquiz.data.Country;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,21 +20,48 @@ public class MainActivity extends ActionBarActivity {
 
     private static String TAG = MainActivity.class.getName();
 
-    KmlParser parser = new KmlParser();
+    private final KmlParser parser = new KmlParser();
+
+    private MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        GoogleMap map = mapFragment.getMap();
+        try {
+            MapsInitializer.initialize(this);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        mapView = (MapView) findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        GoogleMap map = mapView.getMap();
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         List<Country> countries = getCountries();
         LatLng point = countries.get(1).lookAt.target;
 
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
     @Override
