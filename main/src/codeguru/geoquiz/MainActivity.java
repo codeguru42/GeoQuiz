@@ -35,15 +35,19 @@ public class MainActivity extends ActionBarActivity {
 
     private int countryIndex;
 
-    private Button nextCountryButton;
+    private Button nextButton;
+
+    private Button prevButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        nextCountryButton = (Button) findViewById(R.id.next_button);
-        nextCountryButton.setEnabled(false);
+        nextButton = (Button) findViewById(R.id.next_button);
+        nextButton.setEnabled(false);
+        prevButton = (Button) findViewById(R.id.prev_button);
+        prevButton.setEnabled(false);
 
         try {
             MapsInitializer.initialize(this);
@@ -62,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        countryIndex = 0;
+        countryIndex = -1;
     }
 
     @Override
@@ -94,11 +98,24 @@ public class MainActivity extends ActionBarActivity {
         Log.d(TAG, "countryIndex=" + countryIndex);
         map.clear();
 
+        ++countryIndex;
+        countryIndex %= countries.size();
         Country country = countries.get(countryIndex);
         paintCountry(country);
         moveCamera();
-        ++countryIndex;
+
+        getSupportActionBar().setTitle("GeoQuiz - " + country.name);
+    }
+
+    public void onPrevCountry(View view) {
+        Log.d(TAG, "countryIndex=" + countryIndex);
+        map.clear();
+
+        --countryIndex;
         countryIndex %= countries.size();
+        Country country = countries.get(countryIndex);
+        paintCountry(country);
+        moveCamera();
 
         getSupportActionBar().setTitle("GeoQuiz - " + country.name);
     }
@@ -133,7 +150,8 @@ public class MainActivity extends ActionBarActivity {
 
     public void setCountries(List<Country> countries) {
         this.countries = countries;
-        nextCountryButton.setEnabled(true);
+        nextButton.setEnabled(true);
+        prevButton.setEnabled(true);
     }
 
 }
