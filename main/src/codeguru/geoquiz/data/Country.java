@@ -7,6 +7,6 @@ public class Country {
 
     public String name;
 
-    public List<LatLng> border;
+    public List<List<LatLng>> borders;
 
 }

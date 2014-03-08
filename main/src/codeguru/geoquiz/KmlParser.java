@@ -71,7 +71,7 @@ public class KmlParser {
 
                 Log.d(TAG, country.name);
             } else if (name.equals("MultiGeometry")) {
-                country.border = parseBorder(parser);
+                country.borders = parseBorder(parser);
             } else {
                 skip(parser);
             }
@@ -109,13 +109,26 @@ public class KmlParser {
         return name;
     }
 
-    private List<LatLng> parseBorder(XmlPullParser parser)
+    private List<List<LatLng>> parseBorder(XmlPullParser parser)
             throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "MultiGeometry");
         parser.next();
         parser.require(XmlPullParser.START_TAG, null, "Point");
         skip(parser);
-        parser.next();
+
+        List<List<LatLng>> borders = new ArrayList<List<LatLng>>();
+        while (parser.next() == XmlPullParser.START_TAG
+                && "Polygon".equals(parser.getName())) {
+            List<LatLng> border = parsePolygon(parser);
+            borders.add(border);
+        }
+        parser.require(XmlPullParser.END_TAG, null, "MultiGeometry");
+
+        return borders;
+    }
+
+    private List<LatLng> parsePolygon(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "Polygon");
         parser.next();
         parser.require(XmlPullParser.START_TAG, null, "outerBoundaryIs");
@@ -128,13 +141,10 @@ public class KmlParser {
         parser.next();
         parser.require(XmlPullParser.END_TAG, null, "outerBoundaryIs");
 
-        while (parser.next() != XmlPullParser.END_TAG || !"Polygon".equals(parser.getName())) {
+        while (parser.next() != XmlPullParser.END_TAG
+                || !"Polygon".equals(parser.getName())) {
         }
         parser.require(XmlPullParser.END_TAG, null, "Polygon");
-
-        while (parser.next() != XmlPullParser.END_TAG || !"MultiGeometry".equals(parser.getName())) {
-        }
-        parser.require(XmlPullParser.END_TAG, null, "MultiGeometry");
 
         return border;
     }

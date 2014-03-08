@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -54,7 +53,7 @@ public class MainActivity extends ActionBarActivity {
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         countries = getCountries();
-        Collections.shuffle(countries);
+        //Collections.shuffle(countries);
         countryIndex = 0;
     }
 
@@ -126,20 +125,24 @@ public class MainActivity extends ActionBarActivity {
     private LatLngBounds getBounds(Country country) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (LatLng point : country.border) {
-            builder.include(point);
+        for (List<LatLng> border : country.borders) {
+            for (LatLng point : border) {
+                builder.include(point);
+            }
         }
 
         return builder.build();
     }
 
     private void paintCountry(Country country) {
-        PolygonOptions polygonOptions = new PolygonOptions();
-        polygonOptions.addAll(country.border);
-        polygonOptions.strokeColor(Color.RED);
-        polygonOptions.strokeWidth((float) 0.30);
-        polygonOptions.fillColor(Color.BLUE);
-        map.addPolygon(polygonOptions);
+        for (List<LatLng> border : country.borders) {
+            PolygonOptions polygonOptions = new PolygonOptions();
+            polygonOptions.addAll(border);
+            polygonOptions.strokeColor(Color.RED);
+            polygonOptions.strokeWidth((float) 0.30);
+            polygonOptions.fillColor(Color.BLUE);
+            map.addPolygon(polygonOptions);
+        }
     }
 
 }
