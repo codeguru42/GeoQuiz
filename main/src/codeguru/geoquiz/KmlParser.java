@@ -138,7 +138,7 @@ public class KmlParser {
             }
         }
 
-        parser.require(XmlPullParser.END_TAG, null, "Placemark");
+        parser.require(XmlPullParser.END_TAG, null, "LookAt");
 
         lookAt.target = new LatLng(latitude, longitude);
         return lookAt;
