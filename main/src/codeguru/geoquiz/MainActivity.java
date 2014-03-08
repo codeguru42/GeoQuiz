@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import codeguru.geoquiz.data.Country;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,6 +25,12 @@ public class MainActivity extends ActionBarActivity {
 
     private MapView mapView;
 
+    private GoogleMap map;
+
+    private List<Country> countries;
+
+    private int countryIndex;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +44,12 @@ public class MainActivity extends ActionBarActivity {
 
         mapView = (MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
-        GoogleMap map = mapView.getMap();
+        map = mapView.getMap();
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-        List<Country> countries = getCountries();
-        LatLng point = countries.get(1).lookAt.target;
+        countries = getCountries();
+        countryIndex = 0;
+        LatLng point = countries.get(countryIndex).lookAt.target;
 
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
     }
@@ -92,6 +100,14 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return null;
+    }
+
+    public void onNextCountry(View view) {
+        LatLng point = countries.get(++countryIndex).lookAt.target;
+
+        Log.d(TAG, "countryIndex=" + countryIndex);
+
+        map.animateCamera(CameraUpdateFactory.newLatLng(point));
     }
 
 }
