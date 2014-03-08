@@ -122,9 +122,7 @@ public class KmlParser {
         parser.next();
         parser.require(XmlPullParser.START_TAG, null, "LinearRing");
         parser.next();
-        parser.require(XmlPullParser.START_TAG, null, "coordinates");
-        String borderStr = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "coordinates");
+        List<LatLng> border = parseCoordinates(parser);
         parser.next();
         parser.require(XmlPullParser.END_TAG, null, "LinearRing");
         parser.next();
@@ -138,6 +136,14 @@ public class KmlParser {
         }
         parser.require(XmlPullParser.END_TAG, null, "MultiGeometry");
 
+        return border;
+    }
+
+    private List<LatLng> parseCoordinates(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, null, "coordinates");
+        String borderStr = parseText(parser);
+        parser.require(XmlPullParser.END_TAG, null, "coordinates");
         List<LatLng> border = new ArrayList<LatLng>();
         String[] coordsStrs = borderStr.split(" ");
         for (String coordsStr : coordsStrs) {
