@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import codeguru.geoquiz.data.Country;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,10 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -27,7 +25,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int PADDING = 100;
 
-    private final KmlParser parser = new KmlParser();
+    private static final String KML_FILE = "countries_world.kml";
 
     private MapView mapView;
 
@@ -37,10 +35,15 @@ public class MainActivity extends ActionBarActivity {
 
     private int countryIndex;
 
+    private Button nextCountryButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        nextCountryButton = (Button) findViewById(R.id.next_button);
+        nextCountryButton.setEnabled(false);
 
         try {
             MapsInitializer.initialize(this);
@@ -53,8 +56,12 @@ public class MainActivity extends ActionBarActivity {
         map = mapView.getMap();
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-        countries = getCountries();
-        Collections.shuffle(countries);
+        try {
+            new ParserTask(this).execute(getAssets().open(KML_FILE));
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
         countryIndex = 0;
     }
 
@@ -81,29 +88,6 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
-    private List<Country> getCountries() {
-        InputStream in = null;
-
-        try {
-            in = getAssets().open("countries_world.kml");
-            return parser.parse(in);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-        } catch (XmlPullParserException e) {
-            Log.e(TAG, e.getMessage(), e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
-            }
-        }
-
-        return null;
     }
 
     public void onNextCountry(View view) {
@@ -145,6 +129,11 @@ public class MainActivity extends ActionBarActivity {
             polygonOptions.fillColor(Color.BLUE);
             map.addPolygon(polygonOptions);
         }
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+        nextCountryButton.setEnabled(true);
     }
 
 }
