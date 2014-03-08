@@ -3,7 +3,6 @@ package codeguru.geoquiz;
 import android.util.Log;
 import android.util.Xml;
 import codeguru.geoquiz.data.Country;
-import codeguru.geoquiz.data.LookAt;
 import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,11 +68,10 @@ public class KmlParser {
             String name = parser.getName();
             if (name.equals("name")) {
                 country.name = parseName(parser);
-            } else if (name.equals("LookAt")) {
-                country.lookAt = parseLookAt(parser);
+
+                Log.d(TAG, country.name);
             } else if (name.equals("MultiGeometry")) {
-                skip(parser);
-                // country.border = parseBorder(parser);
+                country.border = parseBorder(parser);
             } else {
                 skip(parser);
             }
@@ -111,45 +109,34 @@ public class KmlParser {
         return name;
     }
 
-    private LookAt parseLookAt(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "LookAt");
-
-        LookAt lookAt = new LookAt();
-        double longitude = Double.NaN;
-        double latitude = Double.NaN;
-
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            if (name.equals("longitude")) {
-                longitude = parseLongitude(parser);
-            } else if (name.equals("latitude")) {
-                latitude = parseLatitude(parser);
-            } else if (name.equals("heading")) {
-                lookAt.bearing = parseBearing(parser);
-            } else if (name.equals("tilt")) {
-                lookAt.tilt = parstTilt(parser);
-            } else if (name.equals("range")) {
-                lookAt.zoom = parseZoom(parser);
-            } else {
-                skip(parser);
-            }
-        }
-
-        parser.require(XmlPullParser.END_TAG, null, "LookAt");
-
-        lookAt.target = new LatLng(latitude, longitude);
-        return lookAt;
-    }
-
     private List<LatLng> parseBorder(XmlPullParser parser)
             throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "name");
+        parser.require(XmlPullParser.START_TAG, null, "MultiGeometry");
+        parser.next();
+        parser.require(XmlPullParser.START_TAG, null, "Point");
+        skip(parser);
+        parser.next();
+        parser.require(XmlPullParser.START_TAG, null, "Polygon");
+        parser.next();
+        parser.require(XmlPullParser.START_TAG, null, "outerBoundaryIs");
+        parser.next();
+        parser.require(XmlPullParser.START_TAG, null, "LinearRing");
+        parser.next();
+        parser.require(XmlPullParser.START_TAG, null, "coordinates");
         String borderStr = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "name");
+        parser.require(XmlPullParser.END_TAG, null, "coordinates");
+        parser.next();
+        parser.require(XmlPullParser.END_TAG, null, "LinearRing");
+        parser.next();
+        parser.require(XmlPullParser.END_TAG, null, "outerBoundaryIs");
+
+        while (parser.next() != XmlPullParser.END_TAG || !"Polygon".equals(parser.getName())) {
+        }
+        parser.require(XmlPullParser.END_TAG, null, "Polygon");
+
+        while (parser.next() != XmlPullParser.END_TAG || !"MultiGeometry".equals(parser.getName())) {
+        }
+        parser.require(XmlPullParser.END_TAG, null, "MultiGeometry");
 
         List<LatLng> border = new ArrayList<LatLng>();
         String[] coordsStrs = borderStr.split(" ");
@@ -172,46 +159,6 @@ public class KmlParser {
             parser.nextTag();
         }
         return result;
-    }
-
-    private double parseLongitude(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "longitude");
-        String longitude = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "longitude");
-        return Double.parseDouble(longitude);
-    }
-
-    private double parseLatitude(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "latitude");
-        String latitude = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "latitude");
-        return Double.parseDouble(latitude);
-    }
-
-    private float parseBearing(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "heading");
-        String bearing = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "heading");
-        return Float.parseFloat(bearing);
-    }
-
-    private float parstTilt(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "tilt");
-        String tilt = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "tilt");
-        return Float.parseFloat(tilt);
-    }
-
-    private float parseZoom(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, null, "range");
-        String zoom = parseText(parser);
-        parser.require(XmlPullParser.END_TAG, null, "range");
-        return Float.parseFloat(zoom);
     }
 
 }

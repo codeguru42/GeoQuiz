@@ -7,8 +7,6 @@ public class Country {
 
     public String name;
 
-    public LookAt lookAt;
-
     public List<LatLng> border;
 
 }
