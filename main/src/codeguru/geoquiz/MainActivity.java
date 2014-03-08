@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -53,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
         map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         countries = getCountries();
-        //Collections.shuffle(countries);
+        Collections.shuffle(countries);
         countryIndex = 0;
     }
 
