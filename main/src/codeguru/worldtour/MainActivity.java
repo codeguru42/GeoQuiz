@@ -1,4 +1,4 @@
-package codeguru.geoquiz;
+package codeguru.worldtour;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import codeguru.geoquiz.data.Country;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -104,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
         paintCountry(country);
         moveCamera();
 
-        getSupportActionBar().setTitle("GeoQuiz - " + country.name);
+        getSupportActionBar().setTitle("World Tour - " + country.name);
     }
 
     public void onPrevCountry(View view) {
@@ -117,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
         paintCountry(country);
         moveCamera();
 
-        getSupportActionBar().setTitle("GeoQuiz - " + country.name);
+        getSupportActionBar().setTitle("World Tour - " + country.name);
     }
 
     private void moveCamera() {

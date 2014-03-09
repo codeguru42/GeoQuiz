@@ -1,8 +1,7 @@
-package codeguru.geoquiz;
+package codeguru.worldtour;
 
 import android.util.Log;
 import android.util.Xml;
-import codeguru.geoquiz.data.Country;
 import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.io.InputStream;

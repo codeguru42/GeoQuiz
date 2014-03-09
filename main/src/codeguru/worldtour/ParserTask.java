@@ -1,8 +1,7 @@
-package codeguru.geoquiz;
+package codeguru.worldtour;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import codeguru.geoquiz.data.Country;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;

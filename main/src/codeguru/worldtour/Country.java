@@ -1,4 +1,4 @@
-package codeguru.geoquiz.data;
+package codeguru.worldtour;
 
 import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
